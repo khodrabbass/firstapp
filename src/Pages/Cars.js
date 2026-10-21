@@ -8,6 +8,8 @@ import ford from '../images/ford.avif';
 import audi from '../images/audi.avif';
 import tesla from '../images/tesla.jpg';
 
+import CarComponent from "../Components/Carscomponent";
+
 export default function Cars() {
 
   const cars = [
@@ -19,73 +21,43 @@ export default function Cars() {
     { id: 6, brand: "Tesla", model: "Model S", price: 902000, image: tesla }
   ];
 
-  // Store the IDs of liked cars
   const [likedCars, setLikedCars] = useState([]);
+  const [showCars, setShowCars] = useState(true);
 
-  // Like or unlike a car
- function likeCar(elt) {
-
-  if (likedCars.includes(elt.id)) {
-    setLikedCars(
-      likedCars.filter(id => id !== elt.id)
-    );
-  } else {
-    setLikedCars([...likedCars, elt.id]);
-
-    alert("I like " + elt.brand + " car");
+  function likeCar(elt) {
+    if (likedCars.includes(elt.id)) {
+      setLikedCars(
+        likedCars.filter(id => id !== elt.id)
+      );
+    } else {
+      setLikedCars([...likedCars, elt.id]);
+      alert("I like " + elt.brand + " car");
+    }
   }
-
-}
 
   return (
     <>
       <section className="page-title">
         <h1>Our Cars</h1>
         <p>Find the perfect car that fits your lifestyle and budget.</p>
+
+        <button onClick={() => setShowCars(!showCars)}>
+          {showCars ? "Hide Cars" : "Show Cars"}
+        </button>
       </section>
 
-      <main className="cars-container">
-
-        {cars.map((elt) => (
-
-          <div className="car-card" key={elt.id}>
-
-            <img
-              src={elt.image}
-              alt={elt.brand + " car"}
+      {showCars && (
+        <main className="cars-container">
+          {cars.map((elt) => (
+            <CarComponent
+              key={elt.id}
+              car={elt}
+              liked={likedCars.includes(elt.id)}
+              onLike={() => likeCar(elt)}
             />
-
-            <div className="car-info">
-
-              <h3>{elt.brand}</h3>
-
-              <p>{elt.model}</p>
-
-              <p className="price">
-                ${elt.price.toLocaleString("en-US")}
-              </p>
-
-              <button
-                className={
-                  likedCars.includes(elt.id)
-                    ? "like-btn liked"
-                    : "like-btn"
-                }
-                onClick={() => likeCar(elt)}
-              >
-                {likedCars.includes(elt.id)
-                  ? "♥ Liked"
-                  : "♡ I Like"}
-              </button>
-
-              
-
-            </div>
-          </div>
-
-        ))}
-
-      </main>
+          ))}
+        </main>
+      )}
     </>
   );
 }
